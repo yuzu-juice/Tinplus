@@ -34,7 +34,7 @@ dependencies:
   intl:
   table_calendar:
   provider:
-  fl_chart:
+  fl_chart: 0.62.0
 
 dev_dependencies:
   flutter_test:
