@@ -11,13 +11,13 @@ class RecordPage extends StatefulWidget {
   const RecordPage({Key? key, required this.repository}) : super(key: key);
 
   @override
-  _RecordPageState createState() => _RecordPageState();
+  RecordPageState createState() => RecordPageState();
 }
 
-class _RecordPageState extends State<RecordPage> {
+class RecordPageState extends State<RecordPage> {
   late DateTime _selectedDate;
   Map<DateTime, List<ConversationRecord>> _eventMap = {};
-  int _rating = 3; // ここでratingを状態として保持
+  int _rating = 3;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _RecordPageState extends State<RecordPage> {
   Future<void> _showReflectionDialog() async {
     String reflection = '';
     setState(() {
-      _rating = 3; // ダイアログを表示する前にratingをリセット
+      _rating = 3;
     });
 
     await showDialog(
@@ -57,7 +57,7 @@ class _RecordPageState extends State<RecordPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(height: 20),
-                    _buildRatingStars(setState), // setStateを渡す
+                    _buildRatingStars(setState),
                     TextField(
                       decoration:
                           const InputDecoration(hintText: '反省文を入力してください'),
@@ -124,7 +124,7 @@ class _RecordPageState extends State<RecordPage> {
             Expanded(
               child: SingleChildScrollView(
                 child: SizedBox(
-                  height: 400, // この高さは適宜調整してください
+                  height: 400,
                   child: CalendarWidget(
                     selectedDate: _selectedDate,
                     eventMap: _eventMap,
