@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 class ReportPage extends StatelessWidget {
   final ConversationRepository repository;
 
-  const ReportPage({Key? key, required this.repository}) : super(key: key);
+  const ReportPage({super.key, required this.repository});
 
   @override
   Widget build(BuildContext context) {

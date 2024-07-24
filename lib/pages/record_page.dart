@@ -8,7 +8,7 @@ import '../services/conversation_repository.dart';
 class RecordPage extends StatefulWidget {
   final ConversationRepository repository;
 
-  const RecordPage({Key? key, required this.repository}) : super(key: key);
+  const RecordPage({super.key, required this.repository});
 
   @override
   RecordPageState createState() => RecordPageState();

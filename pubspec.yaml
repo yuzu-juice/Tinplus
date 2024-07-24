@@ -30,10 +30,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences:
-  intl:
-  table_calendar:
-  provider:
+  shared_preferences: ^2.2.3
+  intl: ^0.19.0
+  table_calendar: ^3.1.2
+  provider: ^6.1.2
+  amplify_flutter: ^2.3.0
+  amplify_auth_cognito: ^2.3.0
+  amplify_authenticator: ^2.1.1
+  amplify_api: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -44,7 +48,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
