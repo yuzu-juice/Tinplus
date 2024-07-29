@@ -1,5 +1,3 @@
-// lib/pages/report_page/report_page.dart
-
 import 'package:flutter/material.dart';
 import '../models/conversation_record.dart';
 import '../services/conversation_repository.dart';
@@ -24,6 +22,7 @@ class ReportPage extends StatelessWidget {
                 final date = sortedDates[index];
                 final records = repository.eventMap[date]!;
                 return ExpansionTile(
+                  initiallyExpanded: true,
                   title: Text(DateFormat('yyyy年MM月dd日').format(date)),
                   children: records
                       .map((record) => _buildRecordTile(record))

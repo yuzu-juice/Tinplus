@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/record_page.dart' as record_page;
-import 'pages/graph_page.dart';
-import 'pages/report_page.dart' as report_page;
-import 'pages/settings_page.dart'; // 追加
 import 'services/conversation_repository.dart';
 import 'services/shared_prefs_service.dart';
+import 'pages/home_page.dart';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
@@ -80,45 +77,6 @@ class MyApp extends StatelessWidget {
         home: Consumer<ConversationRepository>(
           builder: (context, repository, _) => HomePage(repository: repository),
         ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  final ConversationRepository repository;
-
-  const HomePage({super.key, required this.repository});
-
-  @override
-  HomePageState createState() => HomePageState();
-}
-
-class HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Tinplus🔥')),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          record_page.RecordPage(repository: widget.repository),
-          const GraphPage(),
-          report_page.ReportPage(repository: widget.repository),
-          const SettingsPage(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '記録する'),
-          BottomNavigationBarItem(icon: Icon(Icons.show_chart), label: 'グラフ'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'レポート'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
-        ],
       ),
     );
   }
