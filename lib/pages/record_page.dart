@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../components/calendar_widget.dart';
 import '../components/conversation_button.dart';
 import '../models/conversation_record.dart';
-import '../services/conversation_repository.dart';
+import '../services/conversation_service.dart';
+import '../provider/conversation_provider.dart';
 
 class RecordPage extends StatefulWidget {
-  final ConversationRepository repository;
-
-  const RecordPage({super.key, required this.repository});
+  const RecordPage({super.key});
 
   @override
   RecordPageState createState() => RecordPageState();
@@ -16,26 +16,22 @@ class RecordPage extends StatefulWidget {
 
 class RecordPageState extends State<RecordPage> {
   late DateTime _selectedDate;
-  Map<DateTime, List<ConversationRecord>> _eventMap = {};
   int _rating = 3;
+  String _userId = '';
+  final ConversationService _conversationService = ConversationService();
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _loadData();
+    _loadUserId();
   }
 
-  Future<void> _loadData() async {
-    final data = await widget.repository.loadData();
-    setState(() => _eventMap = data);
-  }
-
-  Future<void> _addConversationRecord(
-      DateTime date, String reflection, int rating) async {
-    widget.repository.addRecord(
-        ConversationRecord(date: date, reflection: reflection, rating: rating));
-    await _loadData();
+  Future<void> _loadUserId() async {
+    final provider = Provider.of<ConversationProvider>(context, listen: false);
+    _userId = await _conversationService.getUserId();
+    provider.loadConversations();
   }
 
   Future<void> _showReflectionDialog() async {
@@ -46,13 +42,13 @@ class RecordPageState extends State<RecordPage> {
 
     await showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (dialogContext, setState) {
             return AlertDialog(
               title: const Text('会話の振り返り'),
               content: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(dialogContext).size.width * 0.8,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -71,20 +67,56 @@ class RecordPageState extends State<RecordPage> {
               actions: [
                 TextButton(
                   child: const Text('キャンセル'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Navigator.of(dialogContext).pop(),
                 ),
-                TextButton(
-                  child: const Text('保存'),
-                  onPressed: () {
-                    _addConversationRecord(_selectedDate, reflection, _rating);
-                    Navigator.of(context).pop();
-                  },
-                ),
+                _isSaving
+                    ? const CircularProgressIndicator()
+                    : TextButton(
+                        child: const Text('保存'),
+                        onPressed: () async {
+                          setState(() {
+                            _isSaving = true;
+                          });
+                          await _saveData(reflection);
+                          setState(() {
+                            _isSaving = false;
+                          });
+                          Navigator.of(dialogContext).pop();
+                        },
+                      ),
               ],
             );
           },
         );
       },
+    );
+  }
+
+  Future<void> _saveData(String reflection) async {
+    if (_userId.isEmpty) {
+      _showSnackBar('ユーザーIDが取得できていません。再ログインしてください。');
+      return;
+    }
+
+    try {
+      final conversation = ConversationRecord(
+        date: _selectedDate,
+        comment: reflection,
+        evaluation: _rating,
+        userId: _userId,
+      );
+
+      await Provider.of<ConversationProvider>(context, listen: false)
+          .addConversation(conversation);
+      _showSnackBar('データが正常に保存されました');
+    } catch (e) {
+      _showSnackBar(e.toString());
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -110,33 +142,38 @@ class RecordPageState extends State<RecordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              DateFormat('yyyy年MM月dd日').format(_selectedDate),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ConversationButton(onPressed: _showReflectionDialog),
-            const SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  height: 400,
-                  child: CalendarWidget(
-                    selectedDate: _selectedDate,
-                    eventMap: _eventMap,
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() => _selectedDate = selectedDay);
-                    },
+      body: Consumer<ConversationProvider>(
+        builder: (context, provider, child) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  DateFormat('yyyy年MM月dd日').format(_selectedDate),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                ConversationButton(onPressed: _showReflectionDialog),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: SizedBox(
+                      height: 400,
+                      child: CalendarWidget(
+                        selectedDate: _selectedDate,
+                        eventMap: provider.groupedConversations,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() => _selectedDate = selectedDay);
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -3,37 +3,43 @@ import 'package:flutter/foundation.dart';
 @immutable
 class ConversationRecord {
   final DateTime date;
-  final String reflection;
-  final int rating;
+  final String comment;
+  final int evaluation;
+  final String userId;
 
   const ConversationRecord({
     required this.date,
-    required this.reflection,
-    required this.rating,
+    required this.comment,
+    required this.evaluation,
+    required this.userId,
   });
 
   Map<String, dynamic> toJson() => {
         'date': date.toIso8601String(),
-        'reflection': reflection,
-        'rating': rating,
+        'comment': comment,
+        'evaluation': evaluation,
+        'user_id': userId,
       };
 
   factory ConversationRecord.fromJson(Map<String, dynamic> json) =>
       ConversationRecord(
         date: DateTime.parse(json['date']),
-        reflection: json['reflection'],
-        rating: json['rating'],
+        comment: json['comment'],
+        evaluation: json['evaluation'],
+        userId: json['user_id'],
       );
 
   ConversationRecord copyWith({
     DateTime? date,
-    String? reflection,
-    int? rating,
+    String? comment,
+    int? evaluation,
+    String? userId,
   }) {
     return ConversationRecord(
       date: date ?? this.date,
-      reflection: reflection ?? this.reflection,
-      rating: rating ?? this.rating,
+      comment: comment ?? this.comment,
+      evaluation: evaluation ?? this.evaluation,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -43,9 +49,11 @@ class ConversationRecord {
       other is ConversationRecord &&
           runtimeType == other.runtimeType &&
           date == other.date &&
-          reflection == other.reflection &&
-          rating == other.rating;
+          comment == other.comment &&
+          evaluation == other.evaluation &&
+          userId == other.userId;
 
   @override
-  int get hashCode => date.hashCode ^ reflection.hashCode ^ rating.hashCode;
+  int get hashCode =>
+      date.hashCode ^ comment.hashCode ^ evaluation.hashCode ^ userId.hashCode;
 }

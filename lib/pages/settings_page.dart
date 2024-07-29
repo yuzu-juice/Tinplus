@@ -25,35 +25,6 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('アカウント設定'),
-            leading: const Icon(Icons.account_circle),
-            onTap: () {
-              // アカウント設定ページへの遷移をここに実装
-            },
-          ),
-          ListTile(
-            title: const Text('通知設定'),
-            leading: const Icon(Icons.notifications),
-            onTap: () {
-              // 通知設定ページへの遷移をここに実装
-            },
-          ),
-          ListTile(
-            title: const Text('プライバシーポリシー'),
-            leading: const Icon(Icons.privacy_tip),
-            onTap: () {
-              // プライバシーポリシーページへの遷移をここに実装
-            },
-          ),
-          ListTile(
-            title: const Text('アプリについて'),
-            leading: const Icon(Icons.info),
-            onTap: () {
-              // アプリ情報ページへの遷移をここに実装
-            },
-          ),
-          const Divider(),
-          ListTile(
             title: const Text('ログアウト'),
             leading: const Icon(Icons.exit_to_app),
             onTap: () => logout(context),
