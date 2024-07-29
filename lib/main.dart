@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'services/conversation_repository.dart';
-import 'services/shared_prefs_service.dart';
-import 'pages/home_page.dart';
-
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'amplify_outputs.dart';
 import 'auth/custom_resolvers.dart';
+import 'pages/home_page.dart';
+import 'provider/conversation_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureAmplify();
-  final sharedPrefsService = SharedPrefsService();
-  final conversationRepository = ConversationRepository(sharedPrefsService);
-  await conversationRepository.loadData();
 
   runApp(
-    Provider<ConversationRepository>(
-      create: (_) => conversationRepository,
+    ChangeNotifierProvider(
+      create: (context) => ConversationProvider(),
       child: const MyApp(),
     ),
   );
@@ -74,9 +69,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         builder: Authenticator.builder(),
-        home: Consumer<ConversationRepository>(
-          builder: (context, repository, _) => HomePage(repository: repository),
-        ),
+        home: const HomePage(),
       ),
     );
   }

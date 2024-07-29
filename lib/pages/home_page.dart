@@ -3,12 +3,9 @@ import 'record_page.dart' as record_page;
 import 'graph_page.dart';
 import 'report_page.dart' as report_page;
 import 'settings_page.dart';
-import '../services/conversation_repository.dart';
 
 class HomePage extends StatefulWidget {
-  final ConversationRepository repository;
-
-  const HomePage({super.key, required this.repository});
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
@@ -23,11 +20,11 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(title: const Text('Tinplus🔥')),
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          record_page.RecordPage(repository: widget.repository),
-          const GraphPage(),
-          report_page.ReportPage(repository: widget.repository),
-          const SettingsPage(),
+        children: const [
+          record_page.RecordPage(),
+          GraphPage(),
+          report_page.ReportPage(),
+          SettingsPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
