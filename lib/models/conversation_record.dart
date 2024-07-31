@@ -1,17 +1,14 @@
-import 'package:flutter/foundation.dart';
-
-@immutable
 class ConversationRecord {
   final DateTime date;
   final String comment;
   final int evaluation;
-  final String userId;
+  final String? userId;
 
   const ConversationRecord({
     required this.date,
     required this.comment,
     required this.evaluation,
-    required this.userId,
+    this.userId,
   });
 
   Map<String, dynamic> toJson() => {
