@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:idb_shim/idb.dart';
 import 'package:idb_shim/idb_browser.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'dart:convert';
 import '../models/conversation_record.dart';
 
@@ -34,10 +35,13 @@ class ConversationService {
 
   Future<void> insertConversation(ConversationRecord conversation) async {
     final url = Uri.parse('$_baseUrl/data/insert');
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final session = await cognitoPlugin.fetchAuthSession();
+    final idToken = session.userPoolTokensResult.value.idToken.raw;
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': idToken},
         body: json.encode(conversation.toJson()),
       );
 
@@ -45,9 +49,7 @@ class ConversationService {
         throw Exception('データの保存中にエラーが発生しました');
       }
 
-      // Exclude user_id when storing locally
-      final localConversation = conversation.toJson()..remove('user_id');
-      await _addConversationToLocal(localConversation);
+      await _addConversationToLocal(conversation.toJson());
     } catch (e) {
       throw Exception('ネットワークエラーが発生しました: $e');
     }
@@ -58,27 +60,35 @@ class ConversationService {
     if (localData.isNotEmpty) {
       return localData;
     }
-
     final url = Uri.parse('$_baseUrl/data/list');
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final session = await cognitoPlugin.fetchAuthSession();
+    final idToken = session.userPoolTokensResult.value.idToken.raw;
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': idToken},
         body: json.encode({
           'user_id': userId,
         }),
       );
-
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         final responseBody = json.decode(jsonResponse['body']);
         if (responseBody.containsKey('result') &&
             responseBody['result'] is List) {
           final List<dynamic> result = responseBody['result'];
-          final conversations =
-              result.map((data) => ConversationRecord.fromJson(data)).toList();
-
+          safePrint('Raw result: $result');
+          final conversations = result.map((data) {
+            data.remove('id');
+            data.remove('user_id');
+            safePrint('Processed data: $data');
+            var record = ConversationRecord.fromJson(data);
+            return record;
+          }).toList();
+          safePrint('Conversations before saving: $conversations');
           await _saveConversationsToLocal(conversations);
+          safePrint('Conversations after saving: $conversations');
 
           return conversations;
         } else {
@@ -87,20 +97,11 @@ class ConversationService {
       } else {
         throw Exception('データの取得中にエラーが発生しました');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      safePrint('Error in listConversations: $e');
+      safePrint('Stack trace: $stackTrace');
       throw Exception('ネットワークエラーが発生しました: $e');
     }
-  }
-
-  Future<List<ConversationRecord>> _getLocalConversations() async {
-    await _openDb();
-    final txn = _db!.transaction(storeName, idbModeReadOnly);
-    final store = txn.objectStore(storeName);
-    final records = await store.getAll();
-    await txn.completed;
-    return records
-        .map((e) => ConversationRecord.fromJson(e as Map<String, dynamic>))
-        .toList();
   }
 
   Future<void> _saveConversationsToLocal(
@@ -109,11 +110,23 @@ class ConversationService {
     final txn = _db!.transaction(storeName, idbModeReadWrite);
     final store = txn.objectStore(storeName);
     for (var conversation in conversations) {
-      // Exclude user_id when storing locally
-      final localConversation = conversation.toJson()..remove('user_id');
-      await store.put(localConversation);
+      final json = conversation.toJson();
+      safePrint('Saving conversation: $json');
+      await store.put(json);
     }
     await txn.completed;
+  }
+
+  Future<List<ConversationRecord>> _getLocalConversations() async {
+    await _openDb();
+    final txn = _db!.transaction(storeName, idbModeReadOnly);
+    final store = txn.objectStore(storeName);
+    final records = await store.getAll();
+    await txn.completed;
+    safePrint('Local records: $records');
+    return records
+        .map((e) => ConversationRecord.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> _addConversationToLocal(
