@@ -1,5 +1,5 @@
 name: tinplus
-description: A new Flutter project.
+description: 女の子との会話を記録して改善しよう。
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -39,6 +39,7 @@ dependencies:
   amplify_authenticator: ^2.1.1
   amplify_api: ^2.3.0
   http: ^1.2.2
+  idb_shim: ^2.6.0+5
 
 dev_dependencies:
   flutter_test:
