@@ -32,8 +32,9 @@ class HomePageState extends State<HomePage> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '記録する'),
-          BottomNavigationBarItem(icon: Icon(Icons.show_chart), label: 'グラフ'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'レポート'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'グラフ'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.description_rounded), label: 'レポート'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
         ],
       ),

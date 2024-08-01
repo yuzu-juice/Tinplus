@@ -9,11 +9,11 @@ class CalendarWidget extends StatelessWidget {
   final void Function(DateTime, DateTime) onDaySelected;
 
   const CalendarWidget({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.eventMap,
     required this.onDaySelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

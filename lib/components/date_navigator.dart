@@ -2,39 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateNavigator extends StatelessWidget {
+  final String currentView;
   final DateTime selectedDate;
-  final ValueChanged<DateTime> onDateChanged;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   const DateNavigator({
-    Key? key,
+    super.key,
+    required this.currentView,
     required this.selectedDate,
-    required this.onDateChanged,
-  }) : super(key: key);
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  String _getDateRangeText() {
+    switch (currentView) {
+      case 'D':
+        return DateFormat('yyyy年M月d日').format(selectedDate);
+      case 'W':
+        final weekStart = selectedDate.subtract(const Duration(days: 6));
+        return '${DateFormat('M月d日').format(weekStart)} - ${DateFormat('M月d日').format(selectedDate)}';
+      case 'M':
+        return DateFormat('yyyy年M月').format(selectedDate);
+      case 'Y':
+        return DateFormat('yyyy年').format(selectedDate);
+      default:
+        return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () {
-            onDateChanged(selectedDate.subtract(const Duration(days: 1)));
-          },
-        ),
-        Text(
-          DateFormat('yyyy年MM月dd日').format(selectedDate),
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: selectedDate.isBefore(DateTime.now())
-              ? () {
-                  onDateChanged(selectedDate.add(const Duration(days: 1)));
-                }
-              : null,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: onPrevious,
+          ),
+          Text(
+            _getDateRangeText(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed: onNext,
+          ),
+        ],
+      ),
     );
   }
 }
