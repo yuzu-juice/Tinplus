@@ -1,9 +1,9 @@
 const amplifyConfig = '''{
   "auth": {
-    "user_pool_id": "ap-northeast-1_WHZCKdK8W",
+    "user_pool_id": "ap-northeast-1_cHoUrdLOS",
     "aws_region": "ap-northeast-1",
-    "user_pool_client_id": "71d142rj4s24ldl7picrhpakm2",
-    "identity_pool_id": "ap-northeast-1:d5e7137f-5831-402e-b091-24b22697d6c7",
+    "user_pool_client_id": "2jlhnro56ghqkdq2o5mre7k8de",
+    "identity_pool_id": "ap-northeast-1:c81e9adf-f62b-490b-b040-27e39af44549",
     "mfa_methods": [],
     "standard_required_attributes": [
       "email"

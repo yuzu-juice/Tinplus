@@ -4,9 +4,9 @@ class ConversationButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ConversationButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

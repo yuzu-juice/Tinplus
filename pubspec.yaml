@@ -40,6 +40,7 @@ dependencies:
   amplify_api: ^2.3.0
   http: ^1.2.2
   idb_shim: ^2.6.0+5
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
