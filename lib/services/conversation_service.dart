@@ -7,8 +7,7 @@ import 'dart:convert';
 import '../models/conversation_record.dart';
 
 class ConversationService {
-  static const String _baseUrl =
-      'https://k60jc7sfx3.execute-api.ap-northeast-1.amazonaws.com/v1';
+  static const String _baseUrl = 'https://api.tinplus.harvestful.tokyo';
   static const String dbName = 'tinplusDatabase';
   static const String storeName = 'conversations';
   Database? _db;
