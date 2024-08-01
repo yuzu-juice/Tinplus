@@ -39,9 +39,8 @@ class GraphPageState extends State<GraphPage> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final String userId = await _conversationService.getUserId();
       final List<ConversationRecord> conversations =
-          await _conversationService.listConversations(userId);
+          await _conversationService.getLocalConversations();
       setState(() {
         _conversations = conversations;
         _filteredConversations = _filterConversations(conversations);

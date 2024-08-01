@@ -55,7 +55,7 @@ class ConversationService {
   }
 
   Future<List<ConversationRecord>> listConversations(String userId) async {
-    final localData = await _getLocalConversations();
+    final localData = await getLocalConversations();
     if (localData.isNotEmpty) {
       return localData;
     }
@@ -116,7 +116,7 @@ class ConversationService {
     await txn.completed;
   }
 
-  Future<List<ConversationRecord>> _getLocalConversations() async {
+  Future<List<ConversationRecord>> getLocalConversations() async {
     await _openDb();
     final txn = _db!.transaction(storeName, idbModeReadOnly);
     final store = txn.objectStore(storeName);
