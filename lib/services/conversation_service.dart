@@ -45,7 +45,6 @@ class ConversationService {
       );
 
       if (response.statusCode != 200) {
-        await _addConversationToLocal(conversation.toJson());
         throw Exception('データの保存中にエラーが発生しました');
       }
 
