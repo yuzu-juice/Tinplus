@@ -20,8 +20,10 @@ class DateNavigator extends StatelessWidget {
       case 'D':
         return DateFormat('yyyy年M月d日').format(selectedDate);
       case 'W':
-        final weekStart = selectedDate.subtract(const Duration(days: 6));
-        return '${DateFormat('M月d日').format(weekStart)} - ${DateFormat('M月d日').format(selectedDate)}';
+        final weekStart =
+            selectedDate.subtract(Duration(days: selectedDate.weekday % 7 - 1));
+        final weekEnd = weekStart.add(const Duration(days: 6));
+        return '${DateFormat('M月d日').format(weekStart)} - ${DateFormat('M月d日').format(weekEnd)}';
       case 'M':
         return DateFormat('yyyy年M月').format(selectedDate);
       case 'Y':

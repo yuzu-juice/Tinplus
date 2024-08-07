@@ -9,7 +9,7 @@ import '../components/segmented_control.dart';
 import '../components/conversation_bar_chart.dart';
 
 class GraphPage extends StatefulWidget {
-  const GraphPage({Key? key}) : super(key: key);
+  const GraphPage({super.key});
 
   @override
   GraphPageState createState() => GraphPageState();
