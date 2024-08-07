@@ -17,10 +17,10 @@ samples, guidance on mobile development, and a full API reference.
 
 ## degub
 ```
-1.
+## 1.
 aws configure sso
 npx ampx sandbox --outputs-format dart --outputs-out-dir lib --profile amplify-policy-xxxxxxxxxxxxxxx
 
-2.
+## 2.
 flutter run --web-port 52905
 ```
