@@ -21,7 +21,7 @@ class SegmentedControl extends StatelessWidget {
             child: CupertinoSlidingSegmentedControl<String>(
               groupValue: currentView,
               children: const {
-                'W': Text('週'),
+                'W': Text('日'),
                 'M': Text('月'),
                 'Y': Text('年'),
               },
